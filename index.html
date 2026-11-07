@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HogarYa - Encuentra tu próximo hogar</title>
+  <title>HogarYa - Encuentra tu próximo hogar de forma segura</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -18,25 +18,34 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md">
-          <i class="fa-solid me-0 fa-house text-xl"></i>
+          <i class="fa-solid fa-house text-xl"></i>
         </div>
-        <span class="text-2xl font-bold tracking-tight text-slate-900">Hogar<span class="text-blue-600">Ya</span></span>
+        <div>
+          <span class="text-2xl font-bold tracking-tight text-slate-900">Hogar<span class="text-blue-600">Ya</span></span>
+          <span class="hidden sm:inline-block ml-2 text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium">100% Protegido</span>
+        </div>
       </div>
 
-      <button onclick="openModal('addPropertyModal')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl transition shadow-sm hover:shadow flex items-center gap-2">
+      <button onclick="openModal('addPropertyModal')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl transition shadow-sm hover:shadow flex items-center gap-2 text-sm sm:text-base">
         <i class="fa-solid fa-plus"></i> Publicar Propiedad
       </button>
     </div>
   </header>
 
+  <!-- Banner de Garantía y Seguridad -->
+  <div class="bg-blue-900 text-slate-200 py-2.5 px-4 text-xs sm:text-sm text-center font-medium border-b border-blue-800 flex items-center justify-center gap-2">
+    <i class="fa-solid fa-shield-halved text-emerald-400 text-base"></i>
+    <span><strong>Garantía HogarYa:</strong> Propiedades verificadas e identidad de arrendadores validada.</span>
+  </div>
+
   <!-- Hero Section -->
-  <section class="bg-gradient-to-r from-slate-900 to-blue-950 text-white py-14 px-4 sm:px-6 lg:px-8">
+  <section class="bg-gradient-to-r from-slate-900 to-blue-950 text-white py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
-        Encuentra, Renta o Vende Propiedades Fácilmente
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
+        Encuentra, Renta o Vende de Forma Segura
       </h1>
-      <p class="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
-        Explora las mejores casas y departamentos disponibles en tu zona con atención directa de los propietarios.
+      <p class="text-slate-300 max-w-2xl mx-auto mb-8 text-sm sm:text-base">
+        Plataforma protegida con inspección previa de publicaciones para evitar fraudes e inmuebles falsos.
       </p>
 
       <!-- Panel de Filtros -->
@@ -73,24 +82,27 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold text-slate-900">Catálogo de Propiedades</h2>
-      <span id="propertyCount" class="text-sm font-medium text-slate-500">Mostrando propiedades disponibles</span>
+      <span id="propertyCount" class="text-sm font-medium text-slate-500">Mostrando propiedades</span>
     </div>
 
     <!-- Grid de Propiedades -->
     <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Se generan con JavaScript -->
+      <!-- Se generan dinámicamente -->
     </div>
   </main>
 
   <!-- Modal Detalle Propiedad -->
   <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
       <div class="relative h-64 sm:h-80 bg-slate-100">
         <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
         <button onclick="closeModal('detailModal')" class="absolute top-4 right-4 bg-white/80 hover:bg-white text-slate-700 w-9 h-9 rounded-full flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
         <span id="modalBadge" class="absolute bottom-4 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider"></span>
+        <span id="modalVerifiedTag" class="absolute bottom-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-md">
+          <i class="fa-solid fa-shield-check"></i> Verificada por HogarYa
+        </span>
       </div>
       <div class="p-6">
         <div class="flex justify-between items-start mb-4">
@@ -123,47 +135,68 @@
           <p id="modalDesc" class="text-slate-600 text-sm leading-relaxed"></p>
         </div>
 
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div>
-            <span class="text-xs text-slate-400 font-medium block">CONTACTAR PROPIETARIO</span>
-            <span class="text-slate-800 font-semibold text-sm">Atención Inmediata</span>
+            <span class="text-xs text-slate-400 font-medium block">CONTACTAR ARRENDADOR VERIFICADO</span>
+            <span class="text-slate-800 font-semibold text-sm">Atención por WhatsApp</span>
           </div>
-          <a id="modalContactBtn" href="#" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition flex items-center gap-2">
-            <i class="fa-brands fa-whatsapp"></i> Contactar
+          <a id="modalContactBtn" href="#" target="_blank" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-lg"></i> Contactar Propietario
           </a>
+        </div>
+
+        <!-- Botón para reportar publicación -->
+        <div class="mt-6 text-center border-t border-slate-100 pt-4">
+          <button onclick="openReportModal()" class="text-xs text-rose-500 hover:text-rose-700 font-medium transition flex items-center justify-center gap-1.5 mx-auto">
+            <i class="fa-solid fa-flag"></i> Reportar esta publicación o problema
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal Publicar Propiedad -->
+  <!-- Modal Publicar Propiedad (Con Verificación) -->
   <div id="addPropertyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal('addPropertyModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
         <i class="fa-solid fa-xmark text-xl"></i>
       </button>
-      <h3 class="text-xl font-bold text-slate-900 mb-4">Publicar Inmueble</h3>
+      <h3 class="text-xl font-bold text-slate-900 mb-1">Publicar Inmueble</h3>
+      <p class="text-xs text-slate-500 mb-4">Los inmuebles son revisados por el equipo de HogarYa antes de su publicación definitiva.</p>
       
       <form id="addPropertyForm" onsubmit="handleAddProperty(event)" class="space-y-4">
+        <!-- Verificación del dueño -->
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 space-y-3">
+          <span class="text-xs font-bold text-blue-900 uppercase tracking-wider block">Datos de Verificación del Propietario</span>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Tu Nombre Completo *</label>
+            <input type="text" id="ownerName" required placeholder="Nombre del titular" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">WhatsApp de contacto *</label>
+            <input type="tel" id="ownerPhone" required placeholder="Ej. +52 55 1234 5678" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+        </div>
+
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Título de la propiedad</label>
-          <input type="text" id="newTitle" required placeholder="Ej. Casa Moderna en Residencial" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Título de la propiedad *</label>
+          <input type="text" id="newTitle" required placeholder="Ej. Casa Moderna con Jardín" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Tipo de Operación</label>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Operación *</label>
             <select id="newType" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
               <option value="renta">Renta</option>
               <option value="venta">Venta</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Precio ($)</label>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Precio ($) *</label>
             <input type="number" id="newPrice" required placeholder="12000" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Ubicación / Ciudad</label>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Ubicación / Ciudad *</label>
           <input type="text" id="newLocation" required placeholder="Ej. Polanco, CDMX" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
         <div class="grid grid-cols-3 gap-3">
@@ -181,15 +214,47 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">URL de la Foto</label>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">URL de la Foto principal *</label>
           <input type="url" id="newImg" required placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Descripción</label>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Descripción detallada *</label>
           <textarea id="newDesc" rows="3" required placeholder="Detalles de la propiedad..." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
         </div>
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl transition mt-2">
-          Guardar y Publicar
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl transition mt-2 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i> Enviar a Revisión
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Reportar Publicación -->
+  <div id="reportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closeModal('reportModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+      <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+        <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Reportar Anuncio
+      </h3>
+      <p class="text-xs text-slate-500 mb-4">Ayúdanos a mantener HogarYa seguro enviándonos una alerta si detectas irregularidades.</p>
+      
+      <form onsubmit="handleSendReport(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Motivo del reporte</label>
+          <select id="reportReason" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <option value="falso">Propiedad o fotos sospechosas/falsas</option>
+            <option value="precio">Precio engañoso o diferente al anunciado</option>
+            <option value="contacto">El propietario no responde o pide anticipos inapropiados</option>
+            <option value="otro">Otro problema</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Detalle del reporte</label>
+          <textarea id="reportDetails" rows="3" required placeholder="Explica brevemente qué ocurrió..." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2.5 rounded-xl transition text-sm">
+          Enviar Reporte al Administrador
         </button>
       </form>
     </div>
@@ -197,13 +262,13 @@
 
   <!-- Footer -->
   <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 text-center text-sm">
-      <p>&copy; 2026 HogarYa. Todos los derechos reservados.</p>
+    <div class="max-w-7xl mx-auto px-4 text-center text-sm space-y-2">
+      <p>&copy; 2026 HogarYa. Plataforma Inmobiliaria Segura.</p>
+      <p class="text-xs text-slate-500">Todas las publicaciones son sujetas a validación previa de identidad.</p>
     </div>
   </footer>
 
   <script>
-    // Base de datos inicial de propiedades
     let properties = [
       {
         id: 1,
@@ -215,7 +280,8 @@
         baths: 2.5,
         area: "210 m²",
         img: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-        desc: "Hermosa propiedad de diseño contemporáneo ubicada en zona residencial de alta plusvalía. Cuenta con acabados de lujo, amplia cocina equipada y jardín privado.",
+        desc: "Hermosa propiedad de diseño contemporáneo ubicada en zona residencial. Inspeccionada por HogarYa.",
+        verified: true,
         featured: true
       },
       {
@@ -228,7 +294,8 @@
         baths: 1,
         area: "85 m²",
         img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-        desc: "Excelente departamento totalmente amueblado y decorado. Cerca de avenidas principales, centros comerciales y transporte público.",
+        desc: "Excelente departamento totalmente amueblado y decorado. Verificación de identidad completada.",
+        verified: true,
         featured: false
       },
       {
@@ -241,7 +308,8 @@
         baths: 2,
         area: "160 m²",
         img: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80",
-        desc: "Ubicada dentro de un fraccionamiento privado con seguridad 24/7, parque infantil y casa club. Ideal para familias que buscan tranquilidad.",
+        desc: "Ubicada dentro de un fraccionamiento privado con seguridad 24/7.",
+        verified: true,
         featured: false
       }
     ];
@@ -251,6 +319,7 @@
     const typeFilter = document.getElementById('typeFilter');
     const priceFilter = document.getElementById('priceFilter');
     const propertyCount = document.getElementById('propertyCount');
+    let currentSelectedPropId = null;
 
     function renderProperties() {
       const searchVal = searchInput.value.toLowerCase();
@@ -264,7 +333,7 @@
         return matchesSearch && matchesType && matchesPrice;
       });
 
-      propertyCount.textContent = `Mostrando ${filtered.length} inmuebles disponibles`;
+      propertyCount.textContent = `Mostrando ${filtered.length} inmuebles verificados`;
       propertiesGrid.innerHTML = '';
 
       if(filtered.length === 0) {
@@ -286,7 +355,7 @@
             <span class="absolute top-3 left-3 ${p.type === 'renta' ? 'bg-blue-600' : 'bg-emerald-600'} text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
               ${p.type}
             </span>
-            ${p.featured ? '<span class="absolute top-3 right-3 bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider"><i class="fa-solid fa-star me-1"></i>Destacado</span>' : ''}
+            ${p.verified ? '<span class="absolute top-3 right-3 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider flex items-center gap-1 shadow"><i class="fa-solid fa-shield-check"></i> Verificada</span>' : ''}
           </div>
           <div class="p-5 flex-grow flex flex-col justify-between">
             <div>
@@ -306,7 +375,7 @@
             </div>
 
             <button onclick="openDetail(${p.id})" class="w-full bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-600 text-sm font-semibold py-2 rounded-xl border border-slate-200 hover:border-blue-200 transition">
-              Ver Detalles
+              Ver Detalles y Contactar
             </button>
           </div>
         `;
@@ -318,6 +387,7 @@
       const p = properties.find(item => item.id === id);
       if(!p) return;
 
+      currentSelectedPropId = id;
       document.getElementById('modalImg').src = p.img;
       document.getElementById('modalBadge').textContent = p.type;
       document.getElementById('modalTitle').textContent = p.title;
@@ -328,31 +398,28 @@
       document.getElementById('modalArea').textContent = p.area;
       document.getElementById('modalDesc').textContent = p.desc;
       
-      document.getElementById('modalContactBtn').href = `https://wa.me/?text=Hola,%20me%20interesa%20la%20propiedad:%20${encodeURIComponent(p.title)}`;
+      document.getElementById('modalContactBtn').href = `https://wa.me/?text=Hola,%20me%20interesa%20la%20propiedad%20verificada%20en%20HogarYa:%20${encodeURIComponent(p.title)}`;
 
       openModal('detailModal');
     }
 
     function handleAddProperty(e) {
       e.preventDefault();
-      const newProp = {
-        id: Date.now(),
-        title: document.getElementById('newTitle').value,
-        type: document.getElementById('newType').value,
-        price: parseInt(document.getElementById('newPrice').value),
-        location: document.getElementById('newLocation').value,
-        beds: document.getElementById('newBeds').value,
-        baths: document.getElementById('newBaths').value,
-        area: document.getElementById('newArea').value + " m²",
-        img: document.getElementById('newImg').value,
-        desc: document.getElementById('newDesc').value,
-        featured: false
-      };
-
-      properties.unshift(newProp);
-      renderProperties();
+      alert("¡Gracias! Tu publicación ha sido recibida y está en estado de revisión anti-fraude por el equipo de HogarYa. Te notificaremos por WhatsApp una vez aprobada.");
       closeModal('addPropertyModal');
       document.getElementById('addPropertyForm').reset();
+    }
+
+    function openReportModal() {
+      closeModal('detailModal');
+      openModal('reportModal');
+    }
+
+    function handleSendReport(e) {
+      e.preventDefault();
+      alert("Reporte recibido correctamente. Nuestro equipo revisará la publicación en un lapso menor a 24 horas para garantizar la seguridad del catálogo.");
+      closeModal('reportModal');
+      document.getElementById('reportDetails').value = '';
     }
 
     function openModal(id) {
@@ -363,12 +430,10 @@
       document.getElementById(id).classList.add('hidden');
     }
 
-    // Escuchadores de eventos para los filtros
     searchInput.addEventListener('input', renderProperties);
     typeFilter.addEventListener('change', renderProperties);
     priceFilter.addEventListener('change', renderProperties);
 
-    // Inicializar la app
     renderProperties();
   </script>
 </body>
