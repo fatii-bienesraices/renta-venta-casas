@@ -135,7 +135,7 @@
           <p id="modalDesc" class="text-slate-600 text-sm leading-relaxed"></p>
         </div>
 
-        <!-- Sección de Contacto dinámica: Renta (Reservar) o Venta (WhatsApp) -->
+        <!-- Sección de Contacto dinámica -->
         <div id="modalActionContainer" class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <!-- Se llena por JavaScript -->
         </div>
@@ -150,14 +150,14 @@
     </div>
   </div>
 
-  <!-- Modal Publicar Propiedad (Con carga de archivos locales, INE y envío a WhatsApp) -->
+  <!-- Modal Publicar Propiedad -->
   <div id="addPropertyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal('addPropertyModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
         <i class="fa-solid fa-xmark text-xl"></i>
       </button>
       <h3 class="text-xl font-bold text-slate-900 mb-1">Publicar Inmueble</h3>
-      <p class="text-xs text-slate-500 mb-4">Sube tus fotos, adjunta tu INE y envía la solicitud directo a nuestro WhatsApp para revisión.</p>
+      <p class="text-xs text-slate-500 mb-4">Sube tus fotos, adjunta tu INE y envía la solicitud directo a nuestro WhatsApp.</p>
       
       <form id="addPropertyForm" onsubmit="handleSendToWhatsApp(event)" class="space-y-4">
         <!-- Verificación de identidad y INE -->
@@ -169,7 +169,7 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Tu WhatsApp de contacto *</label>
-            <input type="tel" id="ownerPhone" required placeholder="Ej. 5512345678" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="tel" id="ownerPhone" required placeholder="Ej. 6141234567" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Foto de tu INE o Identificación (Archivo) *</label>
@@ -196,7 +196,7 @@
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Ubicación / Ciudad *</label>
-          <input type="text" id="newLocation" required placeholder="Ej. Polanco, CDMX" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <input type="text" id="newLocation" required placeholder="Ej. Chihuahua, Chih." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
         <div class="grid grid-cols-3 gap-3">
           <div>
@@ -215,7 +215,7 @@
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Fotos del Inmueble (Puedes seleccionar varias) *</label>
           <input type="file" id="newImagesFiles" accept="image/*" multiple required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-white hover:file:bg-slate-900 cursor-pointer">
-          <span class="text-[10px] text-slate-400 mt-1 block">Selecciona las mejores fotos de la casa directamente desde tu dispositivo.</span>
+          <span class="text-[10px] text-slate-400 mt-1 block">Selecciona las fotos de la casa directamente desde tu dispositivo.</span>
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Descripción detallada *</label>
@@ -275,21 +275,21 @@
         title: "Residencia Moderna con Jardín",
         type: "venta",
         price: 2850000,
-        location: "Querétaro, QRO",
+        location: "Chihuahua, Chih.",
         beds: 3,
         baths: 2.5,
         area: "210 m²",
         img: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
         desc: "Hermosa propiedad de diseño contemporáneo ubicada en zona residencial. Inspeccionada y verificada.",
         verified: true,
-        status: "disponible" // disponible, apartada, vendida / rentada
+        status: "disponible" // disponible, rentada, vendida
       },
       {
         id: 2,
         title: "Departamento Amueblado en Centro",
         type: "renta",
         price: 14500,
-        location: "Guadalajara, JAL",
+        location: "Chihuahua, Chih.",
         beds: 2,
         baths: 1,
         area: "85 m²",
@@ -398,7 +398,6 @@
           </div>
         `;
       } else if (p.type === 'renta') {
-        // FLUJO DE RENTA: Botón de reserva con pago anticipado 100% estilo Airbnb
         actionContainer.innerHTML = `
           <div>
             <span class="text-xs text-slate-400 font-medium block">RESERVA INMEDIATA (PAGO TOTAL)</span>
@@ -409,13 +408,12 @@
           </button>
         `;
       } else {
-        // FLUJO DE VENTA: Se mantiene WhatsApp
         actionContainer.innerHTML = `
           <div>
             <span class="text-xs text-slate-400 font-medium block">CONTACTAR ASESOR DE VENTAS</span>
             <span class="text-slate-800 font-semibold text-sm">Atención personalizada</span>
           </div>
-          <a href="https://wa.me/?text=Hola,%20me%20interesa%20comprar%20la%20propiedad%20${encodeURIComponent(p.title)}" target="_blank" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
+          <a href="https://wa.me/5216141389181?text=Hola,%20me%20interesa%20comprar%20la%20propiedad%20${encodeURIComponent(p.title)}" target="_blank" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
             <i class="fa-brands fa-whatsapp text-lg"></i> Contactar Propietario
           </a>
         `;
@@ -438,14 +436,9 @@
       const area = document.getElementById('newArea').value;
       const desc = document.getElementById('newDesc').value;
 
-      // Armar el mensaje bonito para tu WhatsApp personal
       const mensaje = `Hola HogarYa, quiero publicar una propiedad:%0A%0A👤 *Nombre:* ${name}%0A📱 *Tel:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type}%0A💲 *Precio:* $${price}%0A📍 *Ubicación:* ${location}%0A🛏 *Habs/Baños/Área:* ${beds}h / ${baths}b / ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Ya adjunté mi INE y las fotos en este chat)*`;
 
-      // Sustituye aquí abajo con tu número de WhatsApp personal (con código de país, ej: 521XXXXXXXXXX)
-      const tuNumeroWhatsApp = "5215500000000"; 
-
-      // Abrir WhatsApp con la información prellenada
-      window.open(`https://wa.me/${tuNumeroWhatsApp}?text=${mensaje}`, '_blank');
+      window.open(`https://wa.me/5216141388191?text=${mensaje}`, '_blank');
 
       alert("¡Listo! Se abrirá tu WhatsApp para enviar la solicitud. No olvides adjuntar la foto de tu INE y las fotos de la casa en el chat para que el administrador las valide.");
       closeModal('addPropertyModal');
