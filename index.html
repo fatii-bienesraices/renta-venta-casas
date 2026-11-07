@@ -1,0 +1,649 @@
+.custom-scrollbar::-webkit-scro<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HogarYa - Plataforma Inmobiliaria & Guía de Monetización</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }llbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-house"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-xl tracking-tight text-slate-900">Hogar<span class="text-blue-600">Ya</span></span>
+                    <span class="hidden sm:inline-block text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full ml-2">App Prototipo</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3">
+                <button onclick="openMonetizationModal()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm px-4 py-2 rounded-xl transition shadow-sm">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                    <span class="hidden md:inline">¿Cómo Ganar Dinero Gratis?</span>
+                </button>
+                <button onclick="openPublishModal()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2 rounded-xl transition shadow-sm">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Publicar Propiedad</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+
+        <!-- Hero Banner / Strategy Info -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-3xl p-6 sm:p-8 text-white mb-8 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl font-black pointer-events-none">
+                <i class="fa-solid fa-building"></i>
+            </div>
+            <div class="max-w-3xl relative z-10">
+                <span class="bg-blue-500/30 text-blue-300 border border-blue-400/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Tu negocio inmobiliario digital</span>
+                <h1 class="text-2xl sm:text-4xl font-extrabold mt-3 leading-tight">Encuentra, Renta o Vende Propiedades Fácilmente</h1>
+                <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Esta aplicación demuestra cómo crear una plataforma interactiva. Puedes alojarla **100% gratis** en internet y generar ingresos mediante anuncios, cobro por anuncios destacados y afiliados de seguros o mudanzas.
+                </p>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <button onclick="scrollToCatalog()" class="bg-white text-slate-900 font-semibold px-5 py-2.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm">
+                        Ver Propiedades
+                    </button>
+                    <button onclick="openMonetizationModal()" class="bg-blue-600/80 hover:bg-blue-600 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm border border-blue-400/30">
+                        Ver Plan de Monetización $0 Costo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Controls Bar -->
+        <section class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-8" id="catalog-section">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                
+                <!-- Search Input -->
+                <div class="lg:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Búsqueda</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="searchInput" placeholder="Ciudad, zona o título..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+                    </div>
+                </div>
+
+                <!-- Operation Type Filter -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Operación</label>
+                    <select id="typeFilter" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+                        <option value="all">Todas (Venta y Renta)</option>
+                        <option value="renta">Renta</option>
+                        <option value="venta">Venta</option>
+                    </select>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Precio Máximo ($)</label>
+                    <select id="priceFilter" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+                        <option value="all">Cualquier Precio</option>
+                        <option value="500000">Hasta $500,000</option>
+                        <option value="1500000">Hasta $1,500,000</option>
+                        <option value="3000000">Hasta $3,000,000</option>
+                        <option value="5000000">Hasta $5,000,000+</option>
+                    </select>
+                </div>
+
+                <!-- Reset Filters Button -->
+                <div class="flex items-end">
+                    <button onclick="resetFilters()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        Limpiar Filtros
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Listing Stats & Sorting -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900">Catálogo de Propiedades</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Mostrando <span id="propertyCount" class="font-semibold text-slate-700">0</span> inmuebles disponibles</p>
+            </div>
+            <!-- Sponsored / Affiliate Ad Simulation Banner -->
+            <div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 flex items-center gap-3 text-xs text-amber-800">
+                <span class="bg-amber-500 text-white font-bold text-[10px] px-1.5 py-0.5 rounded uppercase">Anuncio</span>
+                <span>¿Buscas créditos hipotecarios? <a href="#" onclick="showAffiliateAlert(event)" class="underline font-semibold hover:text-amber-900">Cotiza gratis aquí</a></span>
+            </div>
+        </div>
+
+        <!-- Property Grid Container -->
+        <div id="propertyGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic items rendered via JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 my-6">
+            <div class="w-16 h-16 mx-auto bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-2xl mb-4">
+                <i class="fa-solid fa-house-crack"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800">No se encontraron propiedades</h3>
+            <p class="text-slate-500 text-sm max-w-sm mx-auto mt-1">Prueba cambiando los términos de búsqueda o limpiando los filtros para ver más opciones.</p>
+            <button onclick="resetFilters()" class="mt-4 bg-blue-600 text-white text-xs font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition">
+                Restablecer Filtros
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center sm:flex sm:justify-between sm:items-center text-xs text-slate-500">
+            <p>© 2026 HogarYa Platform. Todos los derechos reservados.</p>
+            <p class="mt-2 sm:mt-0">Diseñado para aprendizaje de desarrollo web y monetización sin costo inicial.</p>
+        </div>
+    </footer>
+
+    <!-- Property Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl transform transition-all max-h-[90vh] flex flex-col">
+            <div class="relative h-64 sm:h-80 bg-slate-100">
+                <img id="modalImage" src="" alt="Propiedad" class="w-full h-full object-cover">
+                <button onclick="closeModal('detailModal')" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-9 h-9 rounded-full flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <span id="modalBadge" class="absolute bottom-4 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow">
+                    Renta
+                </span>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-grow">
+                <div class="flex justify-between items-start gap-4">
+                    <div>
+                        <h3 id="modalTitle" class="text-xl font-bold text-slate-900"></h3>
+                        <p id="modalLocation" class="text-sm text-slate-500 mt-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-location-dot text-red-500"></i>
+                            <span></span>
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block font-medium">Precio</span>
+                        <span id="modalPrice" class="text-2xl font-extrabold text-emerald-600"></span>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="grid grid-cols-3 gap-3 my-6 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+                    <div>
+                        <i class="fa-solid fa-bed text-blue-600 text-lg mb-1 block"></i>
+                        <span id="modalBeds" class="font-bold text-slate-800 text-sm"></span>
+                        <span class="text-xs text-slate-400 block">Habitaciones</span>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-bath text-blue-600 text-lg mb-1 block"></i>
+                        <span id="modalBaths" class="font-bold text-slate-800 text-sm"></span>
+                        <span class="text-xs text-slate-400 block">Baños</span>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-ruler-combined text-blue-600 text-lg mb-1 block"></i>
+                        <span id="modalArea" class="font-bold text-slate-800 text-sm"></span>
+                        <span class="text-xs text-slate-400 block">Área</span>
+                    </div>
+                </div>
+
+                <h4 class="font-bold text-slate-900 text-sm mb-2">Descripción de la Propiedad</h4>
+                <p id="modalDescription" class="text-slate-600 text-sm leading-relaxed mb-6"></p>
+
+                <!-- Simulated Contact Box -->
+                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4">
+                    <h5 class="text-xs font-bold text-blue-900 uppercase tracking-wider mb-2">Contactar al Propietario</h5>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="clientPhone" placeholder="Tu teléfono o correo" class="flex-grow px-3 py-2 bg-white border border-blue-200 rounded-xl text-sm focus:outline-none">
+                        <button onclick="handleContactSubmit()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-5 py-2 rounded-xl transition shadow-sm whitespace-nowrap">
+                            Enviar Mensaje
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-blue-700/80 mt-2">💡 <i>Monetización: Aquí puedes cobrar una pequeña comisión al propietario por cada cliente potencial ("lead") enviado.</i></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Free Monetization Strategy Modal -->
+    <div id="monetizationModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-700 p-6 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-lg">Estrategia: App 100% Gratis + Ingresos</h3>
+                        <p class="text-emerald-100 text-xs">Cómo construir y monetizar sin invertir dinero inicial</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('monetizationModal')" class="bg-white/10 hover:bg-white/20 text-white w-8 h-8 rounded-full flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-6 text-sm text-slate-600">
+                
+                <!-- Pillar 1 -->
+                <div class="flex gap-4 items-start bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex-shrink-0 flex items-center justify-center text-lg font-bold">1</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-base mb-1">Alojamiento y Servidor Totalmente Gratis ($0 USD)</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            No necesitas comprar hosting ni pagar servidores costosos. Puedes publicar tu página gratis usando:
+                        </p>
+                        <ul class="list-disc list-inside mt-2 text-xs text-slate-700 space-y-1">
+                            <li><b>Vercel / Netlify / GitHub Pages:</b> Alojamiento web gratuito para el código frontend.</li>
+                            <li><b>Firebase / Supabase:</b> Bases de datos gratuitas para guardar propiedades y usuarios.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="flex gap-4 items-start bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex-shrink-0 flex items-center justify-center text-lg font-bold">2</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-base mb-1">4 Formas de Generar Ingresos con esta App</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="font-bold text-slate-800 text-xs block mb-1">⭐ Anuncios Destacados</span>
+                                <p class="text-[11px] text-slate-500">Cobra una cuota fija a los dueños para fijar sus propiedades al inicio del catálogo.</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="font-bold text-slate-800 text-xs block mb-1">🤝 Afiliados de Servicios</span>
+                                <p class="text-[11px] text-slate-500">Gana comisiones recomendando empresas de mudanzas, seguros de hogar o créditos bancarios.</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="font-bold text-slate-800 text-xs block mb-1">🎯 Venta de Leads (Contactos)</span>
+                                <p class="text-[11px] text-slate-500">Conecta compradores interesados con agentes inmobiliarios y cobra por cada contacto verificado.</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <span class="font-bold text-slate-800 text-xs block mb-1">📢 Redes de Anuncios</span>
+                                <p class="text-[11px] text-slate-500">Integra Google AdSense o Ezoic para mostrar publicidad discreta en los listados.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-xs text-emerald-900">
+                    <h5 class="font-bold text-sm mb-1">🚀 Siguiente paso para ponerla en marcha:</h5>
+                    <p>
+                        Aprende lo básico de HTML, CSS y JavaScript (como en este prototipo). Una vez listo, conecta tu frontend a una base de datos como <b>Supabase</b> o <b>Firebase</b> para que los usuarios reales puedan registrar e ingresar sus propiedades en tiempo real.
+                    </p>
+                </div>
+
+            </div>
+            
+            <div class="bg-slate-100 px-6 py-4 border-t border-slate-200 text-right">
+                <button onclick="closeModal('monetizationModal')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Publish Property Modal -->
+    <div id="publishModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+            <div class="bg-blue-600 p-5 text-white flex justify-between items-center">
+                <h3 class="font-bold text-base flex items-center gap-2">
+                    <i class="fa-solid fa-house-medical"></i> Publicar Nueva Propiedad
+                </h3>
+                <button onclick="closeModal('publishModal')" class="text-white/80 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="publishForm" onsubmit="handlePublishSubmit(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Título de la Propiedad</label>
+                    <input type="text" id="pubTitle" required placeholder="Ej. Casa Moderna con Jardín" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipo de Operación</label>
+                        <select id="pubType" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="renta">Renta</option>
+                            <option value="venta">Venta</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Precio ($)</label>
+                        <input type="number" id="pubPrice" required placeholder="Ej. 12000" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ubicación / Ciudad</label>
+                    <input type="text" id="pubLocation" required placeholder="Ej. Polanco, Ciudad de México" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Habitaciones</label>
+                        <input type="number" id="pubBeds" value="2" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Baños</label>
+                        <input type="number" id="pubBaths" value="1" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Área (m²)</label>
+                        <input type="number" id="pubArea" value="85" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL de la Foto</label>
+                    <input type="url" id="pubImage" placeholder="https://..." class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition text-sm shadow">
+                        Publicar Inmueble (Demo)
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 text-sm">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMessage">Operación realizada con éxito</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Sample Initial Properties Data
+        const initialProperties = [
+            {
+                id: 1,
+                title: "Departamento Contemporáneo en Zaidín",
+                type: "renta",
+                price: 18000,
+                location: "Granada, España",
+                beds: 2,
+                baths: 2,
+                area: 90,
+                featured: true,
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+                description: "Hermoso departamento iluminado con acabados de primera calidad, balcones panorámicos y seguridad 24 horas."
+            },
+            {
+                id: 2,
+                title: "Residencia Familiar con Jardín",
+                type: "venta",
+                price: 3450000,
+                location: "Querétaro, México",
+                beds: 4,
+                baths: 3,
+                area: 240,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80",
+                description: "Casa espaciosa ideal para familias grandes. Cuenta con amplia cocina integral, área de juegos y espacio para 3 autos."
+            },
+            {
+                id: 3,
+                title: "Studio Loft Minimalista Centro",
+                type: "renta",
+                price: 12500,
+                location: "Medellín, Colombia",
+                beds: 1,
+                baths: 1,
+                area: 55,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+                description: "Loft ejecutivo completamente amueblado a pasos de centros comerciales y zonas de entretenimiento."
+            },
+            {
+                id: 4,
+                title: "Villa de Lujo con Piscina",
+                type: "venta",
+                price: 6800000,
+                location: "Cancún, México",
+                beds: 5,
+                baths: 5,
+                area: 420,
+                featured: true,
+                image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
+                description: "Exclusiva residencia de playa con alberca privada, muelle propio y acabados en mármol."
+            },
+            {
+                id: 5,
+                title: "Casa de Campo Tradicional",
+                type: "venta",
+                price: 1950000,
+                location: "Córdoba, Argentina",
+                beds: 3,
+                baths: 2,
+                area: 180,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80",
+                description: "Tranquila casa rodeada de naturaleza, arboles frutales y excelente vista a la montaña."
+            },
+            {
+                id: 6,
+                title: "Penthouse con Terraza Privada",
+                type: "renta",
+                price: 32000,
+                location: "Ciudad de México",
+                beds: 3,
+                baths: 3,
+                area: 160,
+                featured: false,
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+                description: "Increíble penthouse en piso alto con vista de 360 grados de la ciudad y jacuzzi exterior."
+            }
+        ];
+
+        let properties = [...initialProperties];
+
+        // Format Currency
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
+        }
+
+        // Render Property Cards
+        function renderProperties() {
+            const grid = document.getElementById('propertyGrid');
+            const emptyState = document.getElementById('emptyState');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const typeVal = document.getElementById('typeFilter').value;
+            const priceVal = document.getElementById('priceFilter').value;
+
+            // Filter logic
+            const filtered = properties.filter(item => {
+                const matchesSearch = item.title.toLowerCase().includes(searchVal) || item.location.toLowerCase().includes(searchVal);
+                const matchesType = typeVal === 'all' || item.type === typeVal;
+                const matchesPrice = priceVal === 'all' || item.price <= parseInt(priceVal);
+                return matchesSearch && matchesType && matchesPrice;
+            });
+
+            document.getElementById('propertyCount').textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(item => `
+                <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <!-- Image Container -->
+                        <div class="relative h-48 bg-slate-100 overflow-hidden">
+                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                            <span class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider text-white ${item.type === 'renta' ? 'bg-blue-600' : 'bg-emerald-600'}">
+                                ${item.type === 'renta' ? 'Renta' : 'Venta'}
+                            </span>
+                            ${item.featured ? `
+                                <span class="absolute top-3 right-3 text-[10px] font-extrabold px-2 py-1 rounded bg-amber-400 text-amber-950 uppercase tracking-wide flex items-center gap-1">
+                                    <i class="fa-solid fa-star"></i> Destacado
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="p-5">
+                            <div class="flex justify-between items-baseline mb-2">
+                                <span class="text-xl font-extrabold text-slate-900">${formatMoney(item.price)} ${item.type === 'renta' ? '<span class="text-xs font-normal text-slate-400">/mes</span>' : ''}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-base line-clamp-1">${item.title}</h3>
+                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-location-dot text-red-500"></i>
+                                <span>${item.location}</span>
+                            </p>
+
+                            <!-- Features Icons -->
+                            <div class="flex items-center gap-4 mt-4 pt-3 border-t border-slate-100 text-xs text-slate-600">
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bed text-slate-400"></i> ${item.beds} habs</span>
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bath text-slate-400"></i> ${item.baths} baños</span>
+                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-ruler-combined text-slate-400"></i> ${item.area} m²</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer Button -->
+                    <div class="px-5 pb-5 pt-0">
+                        <button onclick="openDetailModal(${item.id})" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs py-2.5 rounded-xl transition">
+                            Ver Detalles y Contacto
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Event Listeners for Filters
+        document.getElementById('searchInput').addEventListener('input', renderProperties);
+        document.getElementById('typeFilter').addEventListener('change', renderProperties);
+        document.getElementById('priceFilter').addEventListener('change', renderProperties);
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = 'all';
+            document.getElementById('priceFilter').value = 'all';
+            renderProperties();
+        }
+
+        function scrollToCatalog() {
+            document.getElementById('catalog-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Modal Controls
+        function openDetailModal(id) {
+            const item = properties.find(p => p.id === id);
+            if (!item) return;
+
+            document.getElementById('modalImage').src = item.image;
+            document.getElementById('modalTitle').textContent = item.title;
+            document.getElementById('modalLocation').querySelector('span').textContent = item.location;
+            document.getElementById('modalPrice').textContent = formatMoney(item.price) + (item.type === 'renta' ? ' /mes' : '');
+            document.getElementById('modalBeds').textContent = item.beds;
+            document.getElementById('modalBaths').textContent = item.baths;
+            document.getElementById('modalArea').textContent = item.area + ' m²';
+            document.getElementById('modalDescription').textContent = item.description;
+            document.getElementById('modalBadge').textContent = item.type === 'renta' ? 'En Renta' : 'En Venta';
+            document.getElementById('modalBadge').className = `absolute bottom-4 left-4 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow ${item.type === 'renta' ? 'bg-blue-600' : 'bg-emerald-600'}`;
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function openMonetizationModal() {
+            document.getElementById('monetizationModal').classList.remove('hidden');
+        }
+
+        function openPublishModal() {
+            document.getElementById('publishModal').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Handle Contact Submit Simulation
+        function handleContactSubmit() {
+            const phone = document.getElementById('clientPhone').value;
+            if (!phone) {
+                showToast('Por favor escribe un número o correo');
+                return;
+            }
+            closeModal('detailModal');
+            document.getElementById('clientPhone').value = '';
+            showToast('¡Mensaje enviado al propietario!');
+        }
+
+        // Handle Publish Form Submit Simulation
+        function handlePublishSubmit(e) {
+            e.preventDefault();
+            const newProp = {
+                id: Date.now(),
+                title: document.getElementById('pubTitle').value,
+                type: document.getElementById('pubType').value,
+                price: parseFloat(document.getElementById('pubPrice').value),
+                location: document.getElementById('pubLocation').value,
+                beds: parseInt(document.getElementById('pubBeds').value),
+                baths: parseInt(document.getElementById('pubBaths').value),
+                area: parseInt(document.getElementById('pubArea').value),
+                featured: false,
+                image: document.getElementById('pubImage').value || "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+                description: "Propiedad agregada por el usuario en esta sesión de demostración."
+            };
+
+            properties.unshift(newProp);
+            renderProperties();
+            closeModal('publishModal');
+            document.getElementById('publishForm').reset();
+            showToast('¡Propiedad publicada con éxito!');
+        }
+
+        // Affiliate Alert
+        function showAffiliateAlert(e) {
+            e.preventDefault();
+            showToast('Enlace de afiliado simulado (te generaría comisión)');
+        }
+
+        // Toast Helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initial Load
+        window.onload = function() {
+            renderProperties();
+        };
+    </script>
+</body>
+</html>
