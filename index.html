@@ -150,84 +150,93 @@
     </div>
   </div>
 
-  <!-- Modal Publicar Propiedad (Con envío a Correo Electrónico) -->
+  <!-- Modal Publicar Propiedad (Envío directo a WhatsApp 6141389181) -->
   <div id="addPropertyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal('addPropertyModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
         <i class="fa-solid fa-xmark text-xl"></i>
       </button>
       <h3 class="text-xl font-bold text-slate-900 mb-1">Publicar Inmueble</h3>
-      <p class="text-xs text-slate-500 mb-4">Sube tus archivos y envía la solicitud directo a nuestro correo para validación.</p>
+      <p class="text-xs text-slate-500 mb-4">Llena los datos detallados de la propiedad para validación.</p>
       
-      <!-- Envío directo a banuelosfatima95@gmail.com -->
-      <form action="https://formsubmit.co/banuelosfatima95@gmail.com" method="POST" enctype="multipart/form-data" class="space-y-4">
-        
-        <!-- Configuraciones adicionales para FormSubmit -->
-        <input type="hidden" name="_subject" value="Nueva solicitud de propiedad en HogarYa">
-        <input type="hidden" name="_captcha" value="false">
-
-        <!-- Verificación de identidad y INE -->
+      <form id="addPropertyForm" onsubmit="handleSendToWhatsApp(event)" class="space-y-4">
+        <!-- Verificación de identidad -->
         <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 space-y-3">
           <span class="text-xs font-bold text-blue-900 uppercase tracking-wider block"><i class="fa-solid fa-id-card"></i> Verificación de Identidad (Antifraude)</span>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Tu Nombre Completo *</label>
-            <input type="text" name="Nombre del Propietario" required placeholder="Nombre del titular" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="text" id="ownerName" required placeholder="Nombre del titular" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Teléfono o WhatsApp de contacto *</label>
-            <input type="tel" name="Telefono" required placeholder="Ej. 6141234567" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Foto de tu INE o Identificación *</label>
-            <input type="file" name="INE" accept="image/*" required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Tu WhatsApp de contacto *</label>
+            <input type="tel" id="ownerPhone" required placeholder="Ej. 6141234567" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Título de la propiedad *</label>
-          <input type="text" name="Titulo Propiedad" required placeholder="Ej. Casa Moderna con Jardín" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <input type="text" id="newTitle" required placeholder="Ej. Casa Moderna con Jardín" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
+        
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Operación *</label>
-            <select name="Operacion" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              <option value="Renta">Renta (Pago automático)</option>
-              <option value="Venta">Venta (Contacto WhatsApp)</option>
+            <select id="newType" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option value="renta">Renta (Pago automático)</option>
+              <option value="venta">Venta (Contacto WhatsApp)</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Precio ($) *</label>
-            <input type="number" name="Precio" required placeholder="12000" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="number" id="newPrice" required placeholder="12000" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Ubicación / Ciudad *</label>
-          <input type="text" name="Ubicacion" required placeholder="Ej. Chihuahua, Chih." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+
+        <!-- Dirección detallada -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-3">
+          <span class="text-xs font-bold text-slate-700 uppercase tracking-wider block"><i class="fa-solid fa-location-dot text-blue-600"></i> Dirección Exacta del Inmueble</span>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Ciudad / Municipio *</label>
+              <input type="text" id="newCity" required placeholder="Ej. Chihuahua, Chih." class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Colonia *</label>
+              <input type="text" id="newColony" required placeholder="Ej. San Felipe" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="col-span-2">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Calle *</label>
+              <input type="text" id="newStreet" required placeholder="Ej. Av. Universidad" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Número *</label>
+              <input type="text" id="newNumber" required placeholder="Ej. #1204" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+          </div>
         </div>
+
         <div class="grid grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Habitaciones</label>
-            <input type="number" name="Habitaciones" required placeholder="3" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="number" id="newBeds" required placeholder="3" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Baños</label>
-            <input type="number" name="Banos" required placeholder="2" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="number" id="newBaths" required placeholder="2" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Área (m²)</label>
-            <input type="number" name="Area" required placeholder="140" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="number" id="newArea" required placeholder="140" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Fotos del Inmueble (Puedes seleccionar varias) *</label>
-          <input type="file" name="Fotos_Inmueble" accept="image/*" multiple required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-white hover:file:bg-slate-900 cursor-pointer">
-        </div>
-        <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Descripción detallada *</label>
-          <textarea name="Descripcion" rows="3" required placeholder="Detalles de la propiedad, amenidades..." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+          <textarea id="newDesc" rows="3" required placeholder="Detalles de la propiedad, amenidades..." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
         </div>
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl transition mt-2 flex items-center justify-center gap-2">
-          <i class="fa-solid fa-envelope"></i> Enviar Solicitud por Correo
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition mt-2 flex items-center justify-center gap-2">
+          <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Solicitud por WhatsApp
         </button>
       </form>
     </div>
@@ -418,13 +427,40 @@
             <span class="text-xs text-slate-400 font-medium block">CONTACTAR ASESOR DE VENTAS</span>
             <span class="text-slate-800 font-semibold text-sm">Atención personalizada</span>
           </div>
-          <a href="https://wa.me/5216141388191?text=Hola,%20me%20interesa%20comprar%20la%20propiedad%20${encodeURIComponent(p.title)}" target="_blank" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
+          <a href="https://wa.me/5216141389181?text=Hola,%20me%20interesa%20comprar%20la%20propiedad%20${encodeURIComponent(p.title)}" target="_blank" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
             <i class="fa-brands fa-whatsapp text-lg"></i> Contactar Propietario
           </a>
         `;
       }
 
       openModal('detailModal');
+    }
+
+    function handleSendToWhatsApp(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('ownerName').value;
+      const phone = document.getElementById('ownerPhone').value;
+      const title = document.getElementById('newTitle').value;
+      const type = document.getElementById('newType').value;
+      const price = document.getElementById('newPrice').value;
+      const city = document.getElementById('newCity').value;
+      const colony = document.getElementById('newColony').value;
+      const street = document.getElementById('newStreet').value;
+      const number = document.getElementById('newNumber').value;
+      const beds = document.getElementById('newBeds').value;
+      const baths = document.getElementById('newBaths').value;
+      const area = document.getElementById('newArea').value;
+      const desc = document.getElementById('newDesc').value;
+
+      // Mensaje estructurado con dirección exacta dirigido al 6141389181 con etiqueta HogarYa
+      const mensaje = `*SOLICITUD HOGARYA*%0A%0A👤 *Propietario:* ${name}%0A📱 *Teléfono:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type}%0A💲 *Precio:* $${price}%0A%0A📍 *DIRECCIÓN EXACTA:*%0A• Ciudad: ${city}%0A• Colonia: ${colony}%0A• Calle y Núm: ${street} ${number}%0A%0A🛏 *Detalles:* ${beds} habs | ${baths} baños | ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Solicito validación de INE y revisión de inmueble)*`;
+
+      window.open(`https://wa.me/5216141389181?text=${mensaje}`, '_blank');
+
+      alert("¡Listo! Se abrirá tu WhatsApp con todos los datos detallados del inmueble.");
+      closeModal('addPropertyModal');
+      document.getElementById('addPropertyForm').reset();
     }
 
     function openReportModal() {
