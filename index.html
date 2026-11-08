@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Configuración interna de Firebase (Oculta y limpia) -->
+  <!-- Configuración interna de Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -111,7 +111,7 @@
 
     <!-- Grid de Propiedades -->
     <div id="propertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Se generan dinámicamente -->
+      <!-- Dinámico -->
     </div>
   </main>
 
@@ -159,7 +159,7 @@
           <p id="modalDesc" class="text-slate-600 text-sm leading-relaxed"></p>
         </div>
 
-        <!-- Chat Confidencial (Privado por Usuario) -->
+        <!-- Chat Confidencial -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-slate-700 uppercase tracking-wider"><i class="fa-solid fa-user-shield text-blue-600"></i> Chat Confidencial con la Administración</span>
@@ -182,12 +182,12 @@
           </form>
         </div>
 
-        <!-- Botón de Acción -->
+        <!-- Botón de Acción Dinámico (Renta con Mercado Pago / Venta con WhatsApp) -->
         <div id="modalActionContainer" class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <!-- Se llena por JavaScript -->
+          <!-- Dinámico -->
         </div>
 
-        <!-- Botón para reportar publicación -->
+        <!-- Botón Reportar -->
         <div class="mt-4 text-center border-t border-slate-100 pt-3">
           <button onclick="openReportModal()" class="text-xs text-rose-500 hover:text-rose-700 font-medium transition flex items-center justify-center gap-1.5 mx-auto">
             <i class="fa-solid fa-flag"></i> Reportar esta publicación o problema
@@ -197,16 +197,16 @@
     </div>
   </div>
 
-  <!-- Modal Publicar Propiedad (WhatsApp 6141389181) -->
+  <!-- Modal Publicar Propiedad (Con tarifa de $89 para ventas) -->
   <div id="addPropertyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal('addPropertyModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
         <i class="fa-solid fa-xmark text-xl"></i>
       </button>
       <h3 class="text-xl font-bold text-slate-900 mb-1">Publicar Inmueble</h3>
-      <p class="text-xs text-slate-500 mb-4">Llena los datos detallados de la propiedad para validación.</p>
+      <p class="text-xs text-slate-500 mb-4">Llena los datos para validación de INE y revisión.</p>
       
-      <form id="addPropertyForm" onsubmit="handleSendToWhatsApp(event)" class="space-y-3">
+      <form id="addPropertyForm" onsubmit="handlePublishProperty(event)" class="space-y-3">
         <!-- Verificación de identidad -->
         <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 space-y-2">
           <span class="text-xs font-bold text-blue-900 uppercase tracking-wider block"><i class="fa-solid fa-id-card"></i> Verificación de Identidad (Antifraude)</span>
@@ -228,15 +228,21 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Operación *</label>
-            <select id="newType" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              <option value="renta">Renta (Pago automático)</option>
-              <option value="venta">Venta (Atención Administradora)</option>
+            <select id="newType" onchange="togglePublishFeeNotice()" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option value="renta">Renta (Pago automático inquilino)</option>
+              <option value="venta">Venta (Tarifa de publicación $89)</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Precio ($) *</label>
             <input type="number" id="newPrice" required placeholder="12000" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
+        </div>
+
+        <!-- Aviso especial para venta ($89) -->
+        <div id="feeNotice" class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 hidden flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base"></i>
+          <span>Publicar una propiedad en **Venta** requiere una tarifa única de verificación de **$89 MXN** antes de enviarse a WhatsApp.</span>
         </div>
 
         <!-- Dirección detallada -->
@@ -283,13 +289,13 @@
           <textarea id="newDesc" rows="2" required placeholder="Detalles de la propiedad..." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
         </div>
         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition mt-2 flex items-center justify-center gap-2">
-          <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Solicitud por WhatsApp
+          <i class="fa-brands fa-whatsapp text-lg"></i> Continuar Solicitud de Publicación
         </button>
       </form>
     </div>
   </div>
 
-  <!-- Modal Reportar Publicación -->
+  <!-- Modal Reportar -->
   <div id="reportModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
       <button onclick="closeModal('reportModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
@@ -298,15 +304,15 @@
       <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
         <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Reportar Anuncio
       </h3>
-      <p class="text-xs text-slate-500 mb-4">Ayúdanos a mantener HogarYa seguro enviándonos una alerta si detectas irregularidades.</p>
+      <p class="text-xs text-slate-500 mb-4">Ayúdanos a mantener HogarYa seguro.</p>
       
       <form onsubmit="handleSendReport(event)" class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Motivo del reporte</label>
           <select id="reportReason" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
             <option value="falso">Propiedad o fotos sospechosas/falsas</option>
-            <option value="precio">Precio engañoso o diferente al anunciado</option>
-            <option value="contacto">El propietario no responde o pide anticipos inapropiados</option>
+            <option value="precio">Precio engañoso</option>
+            <option value="contacto">El propietario no responde</option>
             <option value="otro">Otro problema</option>
           </select>
         </div>
@@ -325,7 +331,7 @@
   <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
     <div class="max-w-7xl mx-auto px-4 text-center text-sm space-y-2">
       <p>&copy; 2026 HogarYa. Plataforma Inmobiliaria Segura.</p>
-      <p class="text-xs text-slate-500">Todas las publicaciones cuentan con validación obligatoria de INE y estatus en tiempo real.</p>
+      <p class="text-xs text-slate-500">Todas las publicaciones cuentan con validación obligatoria de INE.</p>
     </div>
   </footer>
 
@@ -450,23 +456,24 @@
       document.getElementById('modalArea').textContent = p.area;
       document.getElementById('modalDesc').textContent = p.desc;
       
-      // Limpiar chat al abrir o cargar si ya hay nombre
       cambiarUsuarioPrivado();
 
       const actionContainer = document.getElementById('modalActionContainer');
       if (p.status === 'rentada' || p.status === 'vendida') {
         actionContainer.innerHTML = `<div class="w-full text-center py-2 text-rose-600 font-bold uppercase tracking-wider text-sm">Inmueble No Disponible (${p.status})</div>`;
       } else if (p.type === 'renta') {
+        // Enlace de Mercado Pago de tu mamá para Renta (reemplaza el '#' cuando lo tengas)
         actionContainer.innerHTML = `
           <div>
-            <span class="text-xs text-slate-400 font-medium block">RESERVA INMEDIATA</span>
-            <span class="text-slate-800 font-semibold text-sm">Aparta con pago seguro en línea</span>
+            <span class="text-xs text-slate-400 font-medium block">RESERVA DE RENTA</span>
+            <span class="text-slate-800 font-semibold text-sm">Pago en línea con Mercado Pago</span>
           </div>
-          <button onclick="alert('Próximamente: Conectado con la cuenta BBVA para pago seguro con tarjeta.')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5">
-            <i class="fa-solid fa-credit-card"></i> Reservar y Pagar
-          </button>
+          <a href="AQUÍ_PEGAS_EL_LINK_DE_MERCADO_PAGO_DE_TU_MAMA" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+            <i class="fa-solid fa-credit-card"></i> Pagar Renta
+          </a>
         `;
       } else {
+        // Venta se queda con WhatsApp exclusivo para la administradora
         actionContainer.innerHTML = `
           <div>
             <span class="text-xs text-slate-400 font-medium block">ATENCIÓN HOGARYA</span>
@@ -490,7 +497,6 @@
         return;
       }
 
-      // Creamos una ruta limpia basada en la propiedad y el nombre único del usuario
       const safeUserName = userName.replace(/[^a-zA-Z0-9]/g, '_');
       const chatPath = `chats_confidenciales/prop_${currentSelectedPropId}_user_${safeUserName}`;
 
@@ -527,7 +533,17 @@
       document.getElementById('chatInput').value = '';
     }
 
-    function handleSendToWhatsApp(e) {
+    function togglePublishFeeNotice() {
+      const type = document.getElementById('newType').value;
+      const notice = document.getElementById('feeNotice');
+      if (type === 'venta') {
+        notice.classList.remove('hidden');
+      } else {
+        notice.classList.add('hidden');
+      }
+    }
+
+    function handlePublishProperty(e) {
       e.preventDefault();
       
       const name = document.getElementById('ownerName').value;
@@ -544,6 +560,16 @@
       const area = document.getElementById('newArea').value;
       const desc = document.getElementById('newDesc').value;
 
+      if (type === 'venta') {
+        // Aquí puedes poner tu link de Mercado Pago para los $89 pesos de publicación de venta
+        // Por ahora simularemos la redirección o pago de los $89 pesos:
+        const confirmarPago = confirm(`Para publicar tu propiedad en Venta, se requiere el pago de verificación de $89 MXN. ¿Deseas proceder al pago seguro?`);
+        if (!confirmarPago) return;
+        
+        // Simulación de enlace de pago de $89 pesos (puedes cambiarlo por tu link real de Mercado Pago)
+        // window.open('LINK_DE_MERCADO_PAGO_89_PESOS', '_blank');
+      }
+
       const mensaje = `*SOLICITUD HOGARYA*%0A%0A👤 *Propietario:* ${name}%0A📱 *Teléfono:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type}%0A💲 *Precio:* $${price}%0A%0A📍 *DIRECCIÓN EXACTA:*%0A• Ciudad: ${city}%0A• Colonia: ${colony}%0A• Calle y Núm: ${street} ${number}%0A%0A🛏 *Detalles:* ${beds} habs | ${baths} baños | ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Solicito validación de INE y revisión de inmueble)*`;
 
       window.open(`https://wa.me/5216141389181?text=${mensaje}`, '_blank');
@@ -551,6 +577,7 @@
       alert("¡Listo! Se abrirá tu WhatsApp con los datos completos del inmueble.");
       closeModal('addPropertyModal');
       document.getElementById('addPropertyForm').reset();
+      document.getElementById('feeNotice').classList.add('hidden');
     }
 
     function openReportModal() {
