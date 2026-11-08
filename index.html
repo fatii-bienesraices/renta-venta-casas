@@ -182,7 +182,7 @@
           </form>
         </div>
 
-        <!-- Botón de Acción Dinámico (Renta con Mercado Pago / Venta con WhatsApp) -->
+        <!-- Botón de Acción Dinámico (Renta con Mercado Pago / Venta directo con el Dueño) -->
         <div id="modalActionContainer" class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <!-- Dinámico -->
         </div>
@@ -215,7 +215,7 @@
             <input type="text" id="ownerName" required placeholder="Nombre del titular" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Tu WhatsApp de contacto *</label>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Tu WhatsApp personal *</label>
             <input type="tel" id="ownerPhone" required placeholder="Ej. 6141234567" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
         </div>
@@ -230,7 +230,7 @@
             <label class="block text-xs font-semibold text-slate-600 mb-1">Operación *</label>
             <select id="newType" onchange="togglePublishFeeNotice()" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
               <option value="renta">Renta (Pago automático inquilino)</option>
-              <option value="venta">Venta (Tarifa de publicación $89)</option>
+              <option value="venta">Venta (Contacto directo con dueño + Tarifa $89)</option>
             </select>
           </div>
           <div>
@@ -289,7 +289,7 @@
           <textarea id="newDesc" rows="2" required placeholder="Detalles de la propiedad..." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
         </div>
         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition mt-2 flex items-center justify-center gap-2">
-          <i class="fa-brands fa-whatsapp text-lg"></i> Continuar Solicitud de Publicación
+          <i class="fa-brands fa-whatsapp text-lg"></i> Continuar Solicitud y Publicar
         </button>
       </form>
     </div>
@@ -347,9 +347,10 @@
         baths: 2.5,
         area: "210 m²",
         img: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-        desc: "Hermosa propiedad de diseño contemporáneo ubicada en zona residencial. Inspeccionada y verificada.",
+        desc: "Hermosa propiedad de diseño contemporáneo ubicada en zona residencial.",
         verified: true,
-        status: "disponible"
+        status: "disponible",
+        ownerPhone: "6141389181" // Teléfono del dueño para venta directa
       },
       {
         id: 2,
@@ -363,7 +364,8 @@
         img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
         desc: "Excelente departamento totalmente amueblado. Renta segura con pago en línea.",
         verified: true,
-        status: "disponible"
+        status: "disponible",
+        ownerPhone: "6141389181"
       }
     ];
 
@@ -462,25 +464,26 @@
       if (p.status === 'rentada' || p.status === 'vendida') {
         actionContainer.innerHTML = `<div class="w-full text-center py-2 text-rose-600 font-bold uppercase tracking-wider text-sm">Inmueble No Disponible (${p.status})</div>`;
       } else if (p.type === 'renta') {
-        // Enlace de Mercado Pago de tu mamá para Renta (reemplaza el '#' cuando lo tengas)
+        // Enlace de Mercado Pago para Renta
         actionContainer.innerHTML = `
           <div>
             <span class="text-xs text-slate-400 font-medium block">RESERVA DE RENTA</span>
             <span class="text-slate-800 font-semibold text-sm">Pago en línea con Mercado Pago</span>
           </div>
-          <a href="AQUÍ_PEGAS_EL_LINK_DE_MERCADO_PAGO_DE_TU_MAMA" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+          <a href="AQUÍ_PEGAS_EL_LINK_DE_MERCADO_PAGO" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
             <i class="fa-solid fa-credit-card"></i> Pagar Renta
           </a>
         `;
       } else {
-        // Venta se queda con WhatsApp exclusivo para la administradora
+        // Venta se va directo al teléfono personal del dueño registrado
+        const cleanPhone = p.ownerPhone ? p.ownerPhone.replace(/\D/g,'') : '6141389181';
         actionContainer.innerHTML = `
           <div>
-            <span class="text-xs text-slate-400 font-medium block">ATENCIÓN HOGARYA</span>
-            <span class="text-slate-800 font-semibold text-sm">Coordinación centralizada</span>
+            <span class="text-xs text-slate-400 font-medium block">CONTACTO DIRECTO</span>
+            <span class="text-slate-800 font-semibold text-sm">Hablar con el Propietario</span>
           </div>
-          <a href="https://wa.me/5216141389181?text=Hola,%20me%20interesa%20la%20propiedad%20${encodeURIComponent(p.title)}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5">
-            <i class="fa-brands fa-whatsapp"></i> Contactar por WhatsApp
+          <a href="https://wa.me/521${cleanPhone}?text=Hola,%20me%20interesa%20comprar%20su%20propiedad%20${encodeURIComponent(p.title)}%20vista%20en%20HogarYa" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5">
+            <i class="fa-brands fa-whatsapp"></i> Contactar al Dueño
           </a>
         `;
       }
@@ -561,20 +564,11 @@
       const desc = document.getElementById('newDesc').value;
 
       if (type === 'venta') {
-        // Aquí puedes poner tu link de Mercado Pago para los $89 pesos de publicación de venta
-        // Por ahora simularemos la redirección o pago de los $89 pesos:
-        const confirmarPago = confirm(`Para publicar tu propiedad en Venta, se requiere el pago de verificación de $89 MXN. ¿Deseas proceder al pago seguro?`);
+        const confirmarPago = confirm(`Para publicar tu propiedad en Venta con contacto directo, se requiere el pago de verificación de $89 MXN. ¿Deseas proceder?`);
         if (!confirmarPago) return;
-        
-        // Simulación de enlace de pago de $89 pesos (puedes cambiarlo por tu link real de Mercado Pago)
-        // window.open('LINK_DE_MERCADO_PAGO_89_PESOS', '_blank');
       }
 
-      const mensaje = `*SOLICITUD HOGARYA*%0A%0A👤 *Propietario:* ${name}%0A📱 *Teléfono:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type}%0A💲 *Precio:* $${price}%0A%0A📍 *DIRECCIÓN EXACTA:*%0A• Ciudad: ${city}%0A• Colonia: ${colony}%0A• Calle y Núm: ${street} ${number}%0A%0A🛏 *Detalles:* ${beds} habs | ${baths} baños | ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Solicito validación de INE y revisión de inmueble)*`;
-
-      window.open(`https://wa.me/5216141389181?text=${mensaje}`, '_blank');
-
-      alert("¡Listo! Se abrirá tu WhatsApp con los datos completos del inmueble.");
+      alert("¡Propiedad registrada con éxito! Ya aparece en el sistema.");
       closeModal('addPropertyModal');
       document.getElementById('addPropertyForm').reset();
       document.getElementById('feeNotice').classList.add('hidden');
