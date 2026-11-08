@@ -136,7 +136,10 @@
               <i class="fa-solid fa-location-dot text-blue-600"></i> <span></span>
             </p>
           </div>
-          <span id="modalPrice" class="text-2xl font-extrabold text-blue-600"></span>
+          <div class="text-right">
+            <span id="modalPrice" class="text-2xl font-extrabold text-blue-600 block"></span>
+            <span id="modalFrequency" class="text-xs font-medium text-slate-400 uppercase"></span>
+          </div>
         </div>
 
         <div class="grid grid-cols-3 gap-4 py-3 my-3 border-y border-slate-100 text-center">
@@ -182,7 +185,7 @@
           </form>
         </div>
 
-        <!-- Botón de Acción Dinámico (Renta con Mercado Pago / Venta directo con el Dueño) -->
+        <!-- Botón de Acción Dinámico -->
         <div id="modalActionContainer" class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <!-- Dinámico -->
         </div>
@@ -197,7 +200,7 @@
     </div>
   </div>
 
-  <!-- Modal Publicar Propiedad (Con tarifa de $89 para ventas) -->
+  <!-- Modal Publicar Propiedad -->
   <div id="addPropertyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal('addPropertyModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
@@ -222,21 +225,31 @@
 
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Título de la propiedad *</label>
-          <input type="text" id="newTitle" required placeholder="Ej. Casa Moderna con Jardín" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <input type="text" id="newTitle" required placeholder="Ej. Casa Moderna o Depa Vacacional" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
         
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Operación *</label>
-            <select id="newType" onchange="togglePublishFeeNotice()" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              <option value="renta">Renta (Pago automático inquilino)</option>
-              <option value="venta">Venta (Contacto directo con dueño + Tarifa $89)</option>
+            <select id="newType" onchange="togglePublishOptions()" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option value="renta">Renta (Comisión app 5%)</option>
+              <option value="venta">Venta (Dueño directo + $89 tarifa)</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Precio ($) *</label>
-            <input type="number" id="newPrice" required placeholder="12000" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="number" id="newPrice" required placeholder="Ej. 12000" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
+        </div>
+
+        <!-- Frecuencia de Renta (Mes, Semana, Día) -->
+        <div id="rentFrequencyContainer">
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Tipo de Estancia / Frecuencia de Renta *</label>
+          <select id="newFrequency" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-slate-50">
+            <option value="mes">Por Mes</option>
+            <option value="semana">Por Semana</option>
+            <option value="dia">Por Día</option>
+          </select>
         </div>
 
         <!-- Aviso especial para venta ($89) -->
@@ -342,6 +355,7 @@
         title: "Residencia Moderna con Jardín",
         type: "venta",
         price: 2850000,
+        frequency: "venta",
         location: "Chihuahua, Chih.",
         beds: 3,
         baths: 2.5,
@@ -350,19 +364,20 @@
         desc: "Hermosa propiedad de diseño contemporáneo ubicada en zona residencial.",
         verified: true,
         status: "disponible",
-        ownerPhone: "6141389181" // Teléfono del dueño para venta directa
+        ownerPhone: "6141389181"
       },
       {
         id: 2,
         title: "Departamento Amueblado en Centro",
         type: "renta",
         price: 14500,
+        frequency: "mes",
         location: "Chihuahua, Chih.",
         beds: 2,
         baths: 1,
         area: "85 m²",
         img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-        desc: "Excelente departamento totalmente amueblado. Renta segura con pago en línea.",
+        desc: "Excelente departamento totalmente amueblado. Renta segura con comisión del 5% y pago en línea.",
         verified: true,
         status: "disponible",
         ownerPhone: "6141389181"
@@ -406,13 +421,18 @@
         if (p.status === 'rentada') statusBadge = '<span class="absolute inset-0 bg-slate-900/70 flex items-center justify-center text-white font-extrabold uppercase tracking-widest text-lg">Rentada</span>';
         if (p.status === 'vendida') statusBadge = '<span class="absolute inset-0 bg-slate-900/70 flex items-center justify-center text-white font-extrabold uppercase tracking-widest text-lg">Vendida</span>';
 
+        let freqText = '';
+        if(p.frequency === 'mes') freqText = '/ mes';
+        if(p.frequency === 'semana') freqText = '/ semana';
+        if(p.frequency === 'dia') freqText = '/ día';
+
         const card = document.createElement('div');
         card.className = "bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group relative";
         card.innerHTML = `
           <div class="relative h-48 overflow-hidden bg-slate-100">
             <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
             <span class="absolute top-3 left-3 ${p.type === 'renta' ? 'bg-blue-600' : 'bg-emerald-600'} text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
-              ${p.type}
+              ${p.type} ${p.frequency !== 'venta' ? '(' + p.frequency + ')' : ''}
             </span>
             ${p.verified ? '<span class="absolute top-3 right-3 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider flex items-center gap-1 shadow"><i class="fa-solid fa-shield-check"></i> Verificada</span>' : ''}
             ${statusBadge}
@@ -420,7 +440,7 @@
           <div class="p-5 flex-grow flex flex-col justify-between">
             <div>
               <div class="text-xl font-extrabold text-blue-600 mb-1">
-                $${p.price.toLocaleString('es-MX')} ${p.type === 'renta' ? '<span class="text-xs font-normal text-slate-400">/ mes</span>' : ''}
+                $${p.price.toLocaleString('es-MX')} <span class="text-xs font-normal text-slate-400">${freqText}</span>
               </div>
               <h3 class="font-bold text-slate-800 line-clamp-1 group-hover:text-blue-600 transition">${p.title}</h3>
               <p class="text-xs text-slate-400 mt-1 flex items-center gap-1">
@@ -449,10 +469,17 @@
 
       currentSelectedPropId = id;
       document.getElementById('modalImg').src = p.img;
-      document.getElementById('modalBadge').textContent = p.type;
+      document.getElementById('modalBadge').textContent = `${p.type} (${p.frequency})`;
       document.getElementById('modalTitle').textContent = p.title;
       document.getElementById('modalLocation').querySelector('span').textContent = p.location;
-      document.getElementById('modalPrice').textContent = `$${p.price.toLocaleString('es-MX')} ${p.type === 'renta' ? '/ mes' : ''}`;
+      document.getElementById('modalPrice').textContent = `$${p.price.toLocaleString('es-MX')}`;
+      
+      let freqLabel = '';
+      if(p.frequency === 'mes') freqLabel = 'Por Mes (Comisión app 5%)';
+      if(p.frequency === 'semana') freqLabel = 'Por Semana (Comisión app 5%)';
+      if(p.frequency === 'dia') freqLabel = 'Por Día (Comisión app 5%)';
+      document.getElementById('modalFrequency').textContent = freqLabel;
+
       document.getElementById('modalBeds').textContent = p.beds;
       document.getElementById('modalBaths').textContent = p.baths;
       document.getElementById('modalArea').textContent = p.area;
@@ -464,7 +491,6 @@
       if (p.status === 'rentada' || p.status === 'vendida') {
         actionContainer.innerHTML = `<div class="w-full text-center py-2 text-rose-600 font-bold uppercase tracking-wider text-sm">Inmueble No Disponible (${p.status})</div>`;
       } else if (p.type === 'renta') {
-        // Enlace de Mercado Pago para Renta
         actionContainer.innerHTML = `
           <div>
             <span class="text-xs text-slate-400 font-medium block">RESERVA DE RENTA</span>
@@ -475,7 +501,6 @@
           </a>
         `;
       } else {
-        // Venta se va directo al teléfono personal del dueño registrado
         const cleanPhone = p.ownerPhone ? p.ownerPhone.replace(/\D/g,'') : '6141389181';
         actionContainer.innerHTML = `
           <div>
@@ -536,13 +561,17 @@
       document.getElementById('chatInput').value = '';
     }
 
-    function togglePublishFeeNotice() {
+    function togglePublishOptions() {
       const type = document.getElementById('newType').value;
       const notice = document.getElementById('feeNotice');
+      const freqContainer = document.getElementById('rentFrequencyContainer');
+
       if (type === 'venta') {
         notice.classList.remove('hidden');
+        freqContainer.classList.add('hidden');
       } else {
         notice.classList.add('hidden');
+        freqContainer.classList.remove('hidden');
       }
     }
 
@@ -554,6 +583,7 @@
       const title = document.getElementById('newTitle').value;
       const type = document.getElementById('newType').value;
       const price = document.getElementById('newPrice').value;
+      const frequency = type === 'renta' ? document.getElementById('newFrequency').value : 'venta';
       const city = document.getElementById('newCity').value;
       const colony = document.getElementById('newColony').value;
       const street = document.getElementById('newStreet').value;
@@ -568,8 +598,7 @@
         if (!confirmarPago) return;
       }
 
-      // Mensaje de notificación que te llega a ti (Administradora) por WhatsApp al publicar
-      const mensaje = `*NUEVA SOLICITUD DE PUBLICACIÓN - HOGARYA*%0A%0A👤 *Propietario:* ${name}%0A📱 *Teléfono:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type}%0A💲 *Precio:* $${price}%0A%0A📍 *DIRECCIÓN:*%0A• Ciudad: ${city}%0A• Colonia: ${colony}%0A• Calle y Núm: ${street} ${number}%0A%0A🛏 *Detalles:* ${beds} habs | ${baths} baños | ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Solicito revisión e incorporación a HogarYa)*`;
+      const mensaje = `*NUEVA SOLICITUD DE PUBLICACIÓN - HOGARYA*%0A%0A👤 *Propietario:* ${name}%0A📱 *Teléfono:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type} (${frequency})%0A💲 *Precio:* $${price}%0A%0A📍 *DIRECCIÓN:*%0A• Ciudad: ${city}%0A• Colonia: ${colony}%0A• Calle y Núm: ${street} ${number}%0A%0A🛏 *Detalles:* ${beds} habs | ${baths} baños | ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Solicito revisión e incorporación a HogarYa)*`;
 
       window.open(`https://wa.me/5216141389181?text=${mensaje}`, '_blank');
 
@@ -577,6 +606,7 @@
       closeModal('addPropertyModal');
       document.getElementById('addPropertyForm').reset();
       document.getElementById('feeNotice').classList.add('hidden');
+      document.getElementById('rentFrequencyContainer').classList.remove('hidden');
     }
 
     function openReportModal() {
