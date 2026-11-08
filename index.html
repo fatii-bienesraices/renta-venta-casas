@@ -289,7 +289,7 @@
           <textarea id="newDesc" rows="2" required placeholder="Detalles de la propiedad..." class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
         </div>
         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition mt-2 flex items-center justify-center gap-2">
-          <i class="fa-brands fa-whatsapp text-lg"></i> Continuar Solicitud y Publicar
+          <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Solicitud a la Administradora
         </button>
       </form>
     </div>
@@ -568,7 +568,12 @@
         if (!confirmarPago) return;
       }
 
-      alert("¡Propiedad registrada con éxito! Ya aparece en el sistema.");
+      // Mensaje de notificación que te llega a ti (Administradora) por WhatsApp al publicar
+      const mensaje = `*NUEVA SOLICITUD DE PUBLICACIÓN - HOGARYA*%0A%0A👤 *Propietario:* ${name}%0A📱 *Teléfono:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type}%0A💲 *Precio:* $${price}%0A%0A📍 *DIRECCIÓN:*%0A• Ciudad: ${city}%0A• Colonia: ${colony}%0A• Calle y Núm: ${street} ${number}%0A%0A🛏 *Detalles:* ${beds} habs | ${baths} baños | ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Solicito revisión e incorporación a HogarYa)*`;
+
+      window.open(`https://wa.me/5216141389181?text=${mensaje}`, '_blank');
+
+      alert("¡Listo! Se abrirá tu WhatsApp para recibir la notificación con los datos de la propiedad.");
       closeModal('addPropertyModal');
       document.getElementById('addPropertyForm').reset();
       document.getElementById('feeNotice').classList.add('hidden');
