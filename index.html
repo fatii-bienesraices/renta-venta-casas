@@ -7,29 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Configuración interna de Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDwM6Y5Zvzhwj8xxFEsKQkAhLMRfgYmg0",
-      authDomain: "hogarya-47632.firebaseapp.com",
-      databaseURL: "https://hogarya-47632-default-rtdb.firebaseio.com",
-      projectId: "hogarya-47632",
-      storageBucket: "hogarya-47632.appspot.com",
-      messagingSenderId: "857981242017",
-      appId: "1:857981242017:web:19d43e3d15f8819e31bee0",
-      measurementId: "G-4BFFT9VYLY"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    window.db = getDatabase(app);
-    window.dbRef = ref;
-    window.dbPush = push;
-    window.dbOnChildAdded = onChildAdded;
-  </script>
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; }
@@ -59,7 +36,7 @@
   <!-- Banner de Garantía y Seguridad -->
   <div class="bg-blue-900 text-slate-200 py-2.5 px-4 text-xs sm:text-sm text-center font-medium border-b border-blue-800 flex items-center justify-center gap-2">
     <i class="fa-solid fa-shield-halved text-emerald-400 text-base"></i>
-    <span><strong>Garantía HogarYa:</strong> Propiedades verificadas e identidad validada por INE. Chats 100% confidenciales.</span>
+    <span><strong>Garantía HogarYa:</strong> Propiedades verificadas e identidad validada por INE. Atención personalizada vía WhatsApp.</span>
   </div>
 
   <!-- Hero Section -->
@@ -78,7 +55,7 @@
           <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Búsqueda</label>
           <div class="relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
-            <input type="text" id="searchInput" placeholder="Ciudad, zona o palabra clave..." class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+            <input type="text" id="searchInput" placeholder="Ciudad, estado o palabra clave..." class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
           </div>
         </div>
         <div>
@@ -115,7 +92,7 @@
     </div>
   </main>
 
-  <!-- Modal Detalle Propiedad + Galería + Chat Confidencial -->
+  <!-- Modal Detalle Propiedad + Galería + Chat Directo a WhatsApp -->
   <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col">
       
@@ -171,25 +148,21 @@
           <p id="modalDesc" class="text-slate-600 text-sm leading-relaxed"></p>
         </div>
 
-        <!-- Chat Confidencial -->
+        <!-- Chat Directo a tu WhatsApp -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider"><i class="fa-solid fa-user-shield text-blue-600"></i> Chat Confidencial con la Administración</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium">Privado</span>
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider"><i class="fa-brands fa-whatsapp text-emerald-600 text-base"></i> ¿Dudas? Pregunta Directo a la Administración</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium">WhatsApp</span>
           </div>
-          <p class="text-[11px] text-slate-500 mb-3">Escribe tu nombre y tu mensaje. Cada usuario tiene su propia conversación privada con la administración.</p>
+          <p class="text-[11px] text-slate-500 mb-3">Escribe tu nombre y tu mensaje para abrir un chat de WhatsApp directamente con nosotros.</p>
           
-          <div id="chatMessages" class="bg-white border border-slate-200 rounded-xl h-36 overflow-y-auto p-3 mb-3 space-y-2 text-xs">
-            <p class="text-slate-400 text-center py-4">Ingresa tu nombre para iniciar tu chat privado...</p>
-          </div>
-          
-          <form onsubmit="sendChatMessage(event)" class="space-y-2">
+          <form onsubmit="sendWhatsAppInquiry(event)" class="space-y-2">
             <div class="flex gap-2">
-              <input type="text" id="chatUser" placeholder="Tu Nombre o Teléfono" required onchange="cambiarUsuarioPrivado()" class="w-1/3 px-3 py-2 border rounded-xl text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              <input type="text" id="chatInput" placeholder="Escribe tu mensaje..." required class="flex-grow px-3 py-2 border rounded-xl text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <input type="text" id="clientName" placeholder="Tu Nombre" required class="w-1/3 px-3 py-2 border rounded-xl text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <input type="text" id="clientMessage" placeholder="Escribe tu duda sobre la propiedad..." required class="flex-grow px-3 py-2 border rounded-xl text-xs bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5">
-              <i class="fa-solid fa-paper-plane"></i> Enviar Mensaje Privado
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow">
+              <i class="fa-brands fa-whatsapp text-sm"></i> Enviar Mensaje por WhatsApp
             </button>
           </form>
         </div>
@@ -209,7 +182,7 @@
     </div>
   </div>
 
-  <!-- Modal Publicar Propiedad (Con selección de múltiples fotos) -->
+  <!-- Modal Publicar Propiedad -->
   <div id="addPropertyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal('addPropertyModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
@@ -241,7 +214,7 @@
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Operación *</label>
             <select id="newType" onchange="togglePublishOptions()" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              <option value="renta">Renta (Comisión app 5%)</option>
+              <option value="renta">Renta (Comisión app 15%)</option>
               <option value="venta">Venta (Dueño directo + $89 tarifa)</option>
             </select>
           </div>
@@ -274,18 +247,22 @@
           <span>Publicar una propiedad en **Venta** requiere una tarifa única de verificación de **$89 MXN** antes de enviarse a WhatsApp.</span>
         </div>
 
-        <!-- Dirección detallada -->
+        <!-- Dirección detallada con Ciudad y Estado -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
-          <span class="text-xs font-bold text-slate-700 uppercase tracking-wider block"><i class="fa-solid fa-location-dot text-blue-600"></i> Dirección Exacta del Inmueble</span>
+          <span class="text-xs font-bold text-slate-700 uppercase tracking-wider block"><i class="fa-solid fa-location-dot text-blue-600"></i> Ubicación y Dirección Exacta</span>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Ciudad *</label>
-              <input type="text" id="newCity" required placeholder="Chihuahua, Chih." class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <input type="text" id="newCity" required placeholder="Ej. Chihuahua" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Colonia *</label>
-              <input type="text" id="newColony" required placeholder="San Felipe" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Estado *</label>
+              <input type="text" id="newState" required placeholder="Ej. Chihuahua" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Colonia *</label>
+            <input type="text" id="newColony" required placeholder="San Felipe" class="w-full px-3 py-2 border rounded-xl text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div class="grid grid-cols-3 gap-2">
             <div class="col-span-2">
@@ -372,7 +349,7 @@
         type: "venta",
         price: 2850000,
         frequency: "venta",
-        location: "Chihuahua, Chih.",
+        location: "Chihuahua, Chihuahua",
         beds: 3,
         baths: 2.5,
         area: "210 m²",
@@ -392,7 +369,7 @@
         type: "renta",
         price: 14500,
         frequency: "mes",
-        location: "Chihuahua, Chih.",
+        location: "Chihuahua, Chihuahua",
         beds: 2,
         baths: 1,
         area: "85 m²",
@@ -401,7 +378,7 @@
           "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
           "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"
         ],
-        desc: "Excelente departamento totalmente amueblado por mes en el corazón de la ciudad. Renta segura con comisión del 5% y pago en línea.",
+        desc: "Excelente departamento totalmente amueblado por mes en el corazón de la ciudad. Renta segura con comisión del 15% y pago en línea.",
         verified: true,
         status: "disponible",
         ownerPhone: "6141389181"
@@ -412,7 +389,7 @@
         type: "renta",
         price: 900,
         frequency: "dia",
-        location: "Chihuahua, Chih.",
+        location: "Chihuahua, Chihuahua",
         beds: 1,
         baths: 1,
         area: "45 m²",
@@ -431,7 +408,7 @@
         type: "renta",
         price: 4500,
         frequency: "semana",
-        location: "Creel, Chih.",
+        location: "Creel, Chihuahua",
         beds: 3,
         baths: 2,
         area: "160 m²",
@@ -451,7 +428,7 @@
     const typeFilter = document.getElementById('typeFilter');
     const priceFilter = document.getElementById('priceFilter');
     const propertyCount = document.getElementById('propertyCount');
-    let currentSelectedPropId = null;
+    let currentSelectedProperty = null;
 
     function renderProperties() {
       const searchVal = searchInput.value.toLowerCase();
@@ -534,9 +511,8 @@
       const p = properties.find(item => item.id === id);
       if(!p) return;
 
-      currentSelectedPropId = id;
+      currentSelectedProperty = p;
       
-      // Configurar imagen principal y galería de miniaturas
       const mainImgElement = document.getElementById('modalMainImg');
       const thumbnailsContainer = document.getElementById('modalThumbnails');
       
@@ -567,9 +543,9 @@
       document.getElementById('modalPrice').textContent = `$${p.price.toLocaleString('es-MX')}`;
       
       let freqLabel = '';
-      if(p.frequency === 'mes') freqLabel = 'Por Mes (Comisión app 5%)';
-      if(p.frequency === 'semana') freqLabel = 'Por Semana (Comisión app 5%)';
-      if(p.frequency === 'dia') freqLabel = 'Por Día (Comisión app 5%)';
+      if(p.frequency === 'mes') freqLabel = 'Por Mes (Comisión app 15%)';
+      if(p.frequency === 'semana') freqLabel = 'Por Semana (Comisión app 15%)';
+      if(p.frequency === 'dia') freqLabel = 'Por Día (Comisión app 15%)';
       document.getElementById('modalFrequency').textContent = freqLabel;
 
       document.getElementById('modalBeds').textContent = p.beds;
@@ -577,8 +553,6 @@
       document.getElementById('modalArea').textContent = p.area;
       document.getElementById('modalDesc').textContent = p.desc;
       
-      cambiarUsuarioPrivado();
-
       const actionContainer = document.getElementById('modalActionContainer');
       if (p.status === 'rentada' || p.status === 'vendida') {
         actionContainer.innerHTML = `<div class="w-full text-center py-2 text-rose-600 font-bold uppercase tracking-wider text-sm">Inmueble No Disponible (${p.status})</div>`;
@@ -586,7 +560,7 @@
         actionContainer.innerHTML = `
           <div>
             <span class="text-xs text-slate-400 font-medium block">RESERVA DE RENTA</span>
-            <span class="text-slate-800 font-semibold text-sm">Pago en línea con Mercado Pago (Comisión 5%)</span>
+            <span class="text-slate-800 font-semibold text-sm">Pago en línea con Mercado Pago (Comisión 15%)</span>
           </div>
           <a href="AQUÍ_PEGAS_EL_LINK_DE_MERCADO_PAGO" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
             <i class="fa-solid fa-credit-card"></i> Pagar Renta
@@ -608,49 +582,17 @@
       openModal('detailModal');
     }
 
-    function cambiarUsuarioPrivado() {
-      const userName = document.getElementById('chatUser').value.trim();
-      const chatContainer = document.getElementById('chatMessages');
-
-      if (!userName || !currentSelectedPropId) {
-        chatContainer.innerHTML = '<p class="text-slate-400 text-center py-4">Escribe tu nombre para ver tu chat privado...</p>';
-        return;
-      }
-
-      const safeUserName = userName.replace(/[^a-zA-Z0-9]/g, '_');
-      const chatPath = `chats_confidenciales/prop_${currentSelectedPropId}_user_${safeUserName}`;
-
-      chatContainer.innerHTML = '';
-      if (!window.db) return;
-
-      const messagesRef = window.dbRef(window.db, chatPath);
-      window.dbOnChildAdded(messagesRef, (snapshot) => {
-        const msg = snapshot.val();
-        const msgDiv = document.createElement('div');
-        msgDiv.className = "p-2 bg-slate-100 rounded-lg";
-        msgDiv.innerHTML = `<strong class="text-blue-600">${msg.user}:</strong> <span>${msg.text}</span> <span class="block text-[9px] text-slate-400 text-right">${msg.time}</span>`;
-        chatContainer.appendChild(msgDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      });
-    }
-
-    function sendChatMessage(e) {
+    function sendWhatsAppInquiry(e) {
       e.preventDefault();
-      if (!currentSelectedPropId) return;
+      if (!currentSelectedProperty) return;
 
-      const user = document.getElementById('chatUser').value.trim();
-      const text = document.getElementById('chatInput').value.trim();
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const clientName = document.getElementById('clientName').value.trim();
+      const clientMessage = document.getElementById('clientMessage').value.trim();
 
-      if (!user || !text || !window.db) return;
+      const mensaje = `*CONSULTA DE CLIENTE - HOGARYA*%0A%0A👤 *Cliente:* ${clientName}%0A🏠 *Inmueble:* ${currentSelectedProperty.title} (${currentSelectedProperty.location})%0A💬 *Mensaje:* ${clientMessage}%0A%0A*(Enviado desde HogarYa)*`;
 
-      const safeUserName = user.replace(/[^a-zA-Z0-9]/g, '_');
-      const chatPath = `chats_confidenciales/prop_${currentSelectedPropId}_user_${safeUserName}`;
-
-      const messagesRef = window.dbRef(window.db, chatPath);
-      window.dbPush(messagesRef, { user, text, time });
-
-      document.getElementById('chatInput').value = '';
+      window.open(`https://wa.me/5216141389181?text=${mensaje}`, '_blank');
+      document.getElementById('clientMessage').value = '';
     }
 
     function togglePublishOptions() {
@@ -677,6 +619,7 @@
       const price = document.getElementById('newPrice').value;
       const frequency = type === 'renta' ? document.getElementById('newFrequency').value : 'venta';
       const city = document.getElementById('newCity').value;
+      const state = document.getElementById('newState').value;
       const colony = document.getElementById('newColony').value;
       const street = document.getElementById('newStreet').value;
       const number = document.getElementById('newNumber').value;
@@ -691,19 +634,17 @@
         if (!confirmarPago) return;
       }
 
-      // Procesar múltiples imágenes seleccionadas
       const files = imageFilesInput.files;
       if (files && files.length > 0) {
         let loadedImages = [];
         let processedCount = 0;
 
-        Array.from(files).forEach((file, index) => {
+        Array.from(files).forEach((file) => {
           const reader = new FileReader();
           reader.onload = function(event) {
             loadedImages.push(event.target.result);
             processedCount++;
 
-            // Cuando todas las imágenes se hayan convertido
             if (processedCount === files.length) {
               const nuevaProp = {
                 id: properties.length + 1,
@@ -711,7 +652,7 @@
                 type: type,
                 price: parseInt(price),
                 frequency: frequency,
-                location: `${city}, Chih.`,
+                location: `${city}, ${state}`,
                 beds: parseInt(beds),
                 baths: parseFloat(baths),
                 area: `${area} m²`,
@@ -731,7 +672,7 @@
         });
       }
 
-      const mensaje = `*NUEVA SOLICITUD DE PUBLICACIÓN - HOGARYA*%0A%0A👤 *Propietario:* ${name}%0A📱 *Teléfono:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type} (${frequency})%0A💲 *Precio:* $${price}%0A%0A📍 *DIRECCIÓN:*%0A• Ciudad: ${city}%0A• Colonia: ${colony}%0A• Calle y Núm: ${street} ${number}%0A%0A🛏 *Detalles:* ${beds} habs | ${baths} baños | ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Solicito revisión e incorporación a HogarYa)*`;
+      const mensaje = `*NUEVA SOLICITUD DE PUBLICACIÓN - HOGARYA*%0A%0A👤 *Propietario:* ${name}%0A📱 *Teléfono:* ${phone}%0A🏠 *Título:* ${title}%0A💼 *Operación:* ${type} (${frequency})%0A💲 *Precio:* $${price}%0A%0A📍 *UBICACIÓN:*%0A• Ciudad/Estado: ${city}, ${state}%0A• Colonia: ${colony}%0A• Calle y Núm: ${street} ${number}%0A%0A🛏 *Detalles:* ${beds} habs | ${baths} baños | ${area}m²%0A📝 *Desc:* ${desc}%0A%0A*(Solicito revisión e incorporación a HogarYa)*`;
 
       window.open(`https://wa.me/5216141389181?text=${mensaje}`, '_blank');
 
